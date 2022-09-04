@@ -31,7 +31,10 @@ class Recipe(models.Model):
 
 
 class Tag(models.Model):
-    name = models.CharField(max_length=256)
+    name = models.CharField(
+        max_length=256,
+        unique=True
+    )
     slug = models.SlugField(unique=True)
 
     def __str__(self):
@@ -39,9 +42,14 @@ class Tag(models.Model):
 
 
 class Ingredient(models.Model):
-    name = models.CharField(max_length=256)
+    name = models.CharField(
+        max_length=256,
+        unique=True
+    )
     quantity = models.FloatFild()
-    units_of_measure =
+    units_of_measure = models.CharField(
+        max_length=10
+    )
 
     def __str__(self):
         return self.name
