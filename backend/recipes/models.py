@@ -1,8 +1,25 @@
-from django.db import models
 from django.contrib.auth import get_user_model
+from django.core.validators import MinValueValidator
+from django.db import models
 
 
 User = get_user_model()
+
+
+class Tag(models.Model):
+    name = models.CharField(
+        max_length=256,
+        unique=True
+    )
+    color = models.CharField(
+        'Цвет',
+        max_length=7,
+        unique=True
+        )
+    slug = models.SlugField(unique=True)
+
+    def __str__(self):
+        return self.name
 
 
 class Recipe(models.Model):
@@ -18,24 +35,18 @@ class Recipe(models.Model):
         blank=True
     )
     description = models.TextField(
-        verbose_name='Описание'
+        'Описание'
     )
     tag = models.ForeignKey(
         Tag,
         on_delete=models.CASCADE
     )
-    cooking_time = TimeField()
-
-    def __str__(self):
-        return self.name
-
-
-class Tag(models.Model):
-    name = models.CharField(
-        max_length=256,
-        unique=True
+    cooking_time = models.PositiveSmallIntegerField(
+        'Время приготовления',
+        validators=[
+            MinValueValidator(1, 'Минимальное время одна минута!')
+        ]
     )
-    slug = models.SlugField(unique=True)
 
     def __str__(self):
         return self.name
@@ -46,7 +57,6 @@ class Ingredient(models.Model):
         max_length=256,
         unique=True
     )
-    quantity = models.FloatFild()
     units_of_measure = models.CharField(
         max_length=10
     )

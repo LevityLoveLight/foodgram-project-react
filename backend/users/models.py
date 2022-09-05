@@ -10,7 +10,7 @@ class User(AbstractUser):
          max_length=MAX_LENGTH,
          blank=True,
          unique=True
-         )
+    )
     password = models.CharField(
         'Пароль',
         max_length = MAX_LENGTH,
@@ -21,24 +21,22 @@ class User(AbstractUser):
         max_length=MAX_LENGTH,
         blank=True,
         unique=True
-        )
+    )
     first_name = models.CharField(
         'Имя',
         max_length=MAX_LENGTH,
         blank=True,
-        )
     )
     middle_name = models.CharField(
         'Отчество',
         max_length=MAX_LENGTH,
         blank=False,
-        )
     )
+
     Last_name = models.CharField(
         'Фамилия',
         max_length=MAX_LENGTH,
         blank=True,
-        )
     )
 
     class Meta:
