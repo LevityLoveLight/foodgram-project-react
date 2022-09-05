@@ -48,3 +48,18 @@ class User(AbstractUser):
     def __str__(self):
         return self.login
 
+
+class Follow(models.Model):
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='following',
+    )
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='follower'
+    )
+
+    class Meta:
+        verbose_name = 'Подписка'
