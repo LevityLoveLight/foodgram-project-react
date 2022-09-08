@@ -3,17 +3,18 @@ from django.db import models
 
 MAX_LENGTH = 64
 
+
 class User(AbstractUser):
 
     login = models.CharField(
         'Логин',
-         max_length=MAX_LENGTH,
-         blank=True,
-         unique=True
+        max_length=MAX_LENGTH,
+        blank=True,
+        unique=True
     )
     password = models.CharField(
         'Пароль',
-        max_length = MAX_LENGTH,
+        max_length=MAX_LENGTH,
         blank=True,
     )
     email = models.EmailField(
