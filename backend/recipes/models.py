@@ -42,7 +42,8 @@ class Recipe(models.Model):
     ingredients = models.ManyToManyField(
         Ingredient,
         through='IngredientAmount',
-        related_name='recipes',
+        related_name='recipes'
+    )   
     tag = models.ManyToManyField(
         Tag,
         on_delete=models.CASCADE,
@@ -54,6 +55,9 @@ class Recipe(models.Model):
             MinValueValidator(COOCKING_MIN_TIME, 'Минимальное время одна минута!')
         ]
     )
+
+    class Meta:
+        ordering = ('-id')
 
     def __str__(self):
         return self.name
@@ -94,16 +98,34 @@ class IngredientAmount(models.Model):
     )
 
 
-class Cart(models.Model):
+class Favorite(models.Model):
     user = models.ForeignKey(
         User,
+        related_name='favorites_user',
         on_delete=models.CASCADE,
-        related_name='cart',
+        blank=False,
+        null=False,
+
     )
     recipe = models.ForeignKey(
         Recipe,
+        related_name='fovorites_recipe',
         on_delete=models.CASCADE,
+        blank=False,
+        null=False,
+    )
+
+
+class Cart(models.Model):
+    user = models.ForeignKey(
+        User,
         related_name='cart',
+        on_delete=models.CASCADE,
+    )
+    recipe = models.ForeignKey(
+        Recipe,
+        related_name='cart',
+        on_delete=models.CASCADE
     )
 
     class Meta:
@@ -111,4 +133,4 @@ class Cart(models.Model):
 
 
     def __str__(self):
-        return self.user.username
+        return f'{self.user} {self.recipe}'
