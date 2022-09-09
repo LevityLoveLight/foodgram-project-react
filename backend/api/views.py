@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth import get_user_model
+from djoser.views import UserViewSet
 from rest_framework import generics, status, viewsets
 from rest_framework.permissions import AllowAny
 
@@ -7,6 +8,12 @@ from .pagination import FoodgramPagination
 from .permissions import AdminOrReadOnly
 from .serializer import TagSerializer, IngredientSerializer, RecipeSerializer
 from recipes.models import Recipe, Tag, Ingredient, IngredientAmount, Cart
+from users.models import Follow, User
+
+
+class UserCreatView(UserViewSet):
+    serializer_class = 
+    queryset = User.objects.all()
 
 
 class TagViewSet(viewsets.ModelViewSet):

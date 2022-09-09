@@ -20,13 +20,13 @@ class User(AbstractUser):
     email = models.EmailField(
         'E-mail',
         max_length=MAX_LENGTH,
-        blank=True,
+        blank=False,
         unique=True
     )
     first_name = models.CharField(
         'Имя',
         max_length=MAX_LENGTH,
-        blank=True,
+        blank=False,
     )
     middle_name = models.CharField(
         'Отчество',
@@ -37,8 +37,11 @@ class User(AbstractUser):
     Last_name = models.CharField(
         'Фамилия',
         max_length=MAX_LENGTH,
-        blank=True,
+        blank=False,
     )
+
+    REQUIRED_FIELDS = ['login', 'first_name', 'last_name']
+    USERNAME_FIELD = 'email'
 
     class Meta:
         ordering = ['id']
