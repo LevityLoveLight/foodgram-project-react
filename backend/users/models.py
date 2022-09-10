@@ -6,7 +6,7 @@ MAX_LENGTH = 64
 
 class User(AbstractUser):
 
-    login = models.CharField(
+    username = models.CharField(
         'Логин',
         max_length=MAX_LENGTH,
         blank=True,
@@ -40,7 +40,7 @@ class User(AbstractUser):
         blank=False,
     )
 
-    REQUIRED_FIELDS = ['login', 'first_name', 'last_name']
+    REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
     USERNAME_FIELD = 'email'
 
     class Meta:
@@ -48,7 +48,7 @@ class User(AbstractUser):
         verbose_name = 'Пользователь'
 
     def __str__(self):
-        return self.login
+        return self.username
 
 
 class Follow(models.Model):
