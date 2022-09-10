@@ -1,7 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-MAX_LENGTH = 64
+MAX_LENGTH = 150
 
 
 class User(AbstractUser):
@@ -19,7 +19,7 @@ class User(AbstractUser):
     )
     email = models.EmailField(
         'E-mail',
-        max_length=MAX_LENGTH,
+        max_length=254,
         blank=False,
         unique=True
     )
@@ -40,7 +40,7 @@ class User(AbstractUser):
         blank=False,
     )
 
-    REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
+    REQUIRED_FIELDS = ['username', 'first_name', 'last_name', 'password']
     USERNAME_FIELD = 'email'
 
     class Meta:
@@ -65,3 +65,7 @@ class Follow(models.Model):
 
     class Meta:
         verbose_name = 'Подписка'
+        ordering = ('id',)
+
+    def __str__(self):
+        return f' Пользователь{self.user} подписан на {self.author}'
