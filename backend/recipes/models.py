@@ -2,9 +2,11 @@ from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
 from django.db import models
 
-from backend.foodgram import settings
 
 User = get_user_model()
+
+COOCKING_MIN_TIME = 1
+INGREDIENTS_MIN_QUANTITY = 0.25
 
 
 class Tag(models.Model):
@@ -19,6 +21,22 @@ class Tag(models.Model):
         unique=True
         )
     slug = models.SlugField(unique=True)
+
+    def __str__(self):
+        return self.name
+
+
+class Ingredient(models.Model):
+    name = models.CharField(
+        max_length=256,
+        unique=True
+    )
+    units_of_measure = models.CharField(
+        max_length=10
+    )
+
+    class Meta:
+        ordering = ('name',)
 
     def __str__(self):
         return self.name
@@ -46,8 +64,8 @@ class Recipe(models.Model):
     )   
     tag = models.ManyToManyField(
         Tag,
-        on_delete=models.CASCADE,
-        related_name='recipes'
+        related_name='recipes',
+        through='TagInRecipe'
     )
     cooking_time = models.PositiveSmallIntegerField(
         'Время приготовления',
@@ -58,22 +76,6 @@ class Recipe(models.Model):
 
     class Meta:
         ordering = ('-id')
-
-    def __str__(self):
-        return self.name
-
-
-class Ingredient(models.Model):
-    name = models.CharField(
-        max_length=256,
-        unique=True
-    )
-    units_of_measure = models.CharField(
-        max_length=10
-    )
-
-    class Meta:
-        ordering = ('name',)
 
     def __str__(self):
         return self.name
@@ -95,6 +97,17 @@ class IngredientAmount(models.Model):
         validators=[
             MinValueValidator(INGREDIENTS_MIN_QUANTITY, 'Минимальное количество 0.25!')
         ]
+    )
+
+
+class TagInRecipe(models.Model):
+    recipe = models.ForeignKey(
+        Recipe,
+        on_delete=models.CASCADE
+    )
+    tag = models.ForeignKey(
+        Tag,
+        on_delete=models.CASCADE,
     )
 
 

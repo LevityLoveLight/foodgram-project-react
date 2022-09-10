@@ -1,8 +1,9 @@
 from rest_framework import serializers
 from django.contrib.auth.tokens import default_token_generator
 from django.shortcuts import get_object_or_404
+from djoser.serializers import UserCreateSerializer
+from drf_extra_fields.fields import Base64ImageField
 
-from recipes.models import Tag, Ingredient, Recipe
 from users.models import User
 
 
