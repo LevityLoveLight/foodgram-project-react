@@ -15,72 +15,67 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django_filters.rest_framework import DjangoFilterBackend
 
 from .pagination import FoodgramPagination
-from .permissions import AdminOrReadOnly, IsAdmin, UserPermission
-from .serializer import UserSerializer
-# from recipes.models import Recipe, Tag, Ingredient, IngredientAmount, Cart
+from .permissions import AdminOrReadOnly, IsAdmin, UserPermission, IsAuthorOrReadOnly
+from .serializer import UserSerializer, TagSerializer, RecipeReadSerializer, RecipeWriteSerializer, RecipeSerializer, IngredientSerializer
+from recipes.models import Recipe, Tag, Ingredient, IngredientAmount, Cart, Favorite
 from users.models import Follow, User
 
 
-# class TagViewSet(viewsets.ModelViewSet):
-#     quaryset = Tag.objects.all()
-#     serializer_class = TagSerializer
-#     permissions_class = AllowAny
-#     pagination_class = None
+class TagViewSet(viewsets.ModelViewSet):
+    quaryset = Tag.objects.all()
+    serializer_class = TagSerializer
+    permission_classes = AllowAny
+    pagination_class = None
 
 
-# class IngredientViewSet(viewsets.ModelViewSet):
-#     quaryset = Ingredient.objects.all()
-#     serializer_class = IngredientSerializer
-#     permissions_class = AllowAny
-#     pagination_class = None
+class IngredientViewSet(viewsets.ModelViewSet):
+    quaryset = Ingredient.objects.all()
+    serializer_class = IngredientSerializer
+    permission_classes = AllowAny
+    pagination_class = None
 
 
-# class RecipeViewSet(viewsets.ModelViewSet):
-#     quaryset = Recipe.objects.all()
-#     permissions_class = AdminOrReadOnly
-#     pagination_class = FoodgramPagination
+class RecipeViewSet(viewsets.ModelViewSet):
+    queryset = Recipe.objects.all()
+    permission_classes = (IsAuthorOrReadOnly,)
 
-#     def get_serializer_class(self):
-#         if self.request.method in SAFE_METHODS:
-#             return RecipeSerializer
-#         return AddRecipeSerializer    
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
 
-#     @action(detail=False)
-#     def download_shopping_cart(self, request):
-#         ingredients = get_shopping_list(request.user)
-#         html_template = render_to_string('recipes/template_for_pdf.html',
-#                                          {'ingredients': ingredients})
-#         html = HTML(string=html_template)
-#         result = html.write_pdf()
-#         response = HttpResponse(result, content_type='application/pdf;')
-#         response['Content-Disposition'] = 'inline; filename=shopping_list.pdf'
-#         response['Content-Transfer-Encoding'] = 'binary'
-#         return response
+    def get_serializer_class(self):
+        if self.request.method in SAFE_METHODS:
+            return RecipeReadSerializer
+        return RecipeWriteSerializer
 
+    @staticmethod
+    def __get_intersection_model(request, pk, model):
+        recipe = get_object_or_404(Recipe, id=pk)
+        serializer = RecipeSerializer(recipe, context={'request': request})
+        if request.method == 'POST':
+            model.objects.create(
+                user=request.user,
+                recipe=recipe
+            )
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        model.objects.filter(
+            user=request.user,
+            recipe=recipe
+        ).delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
-# @api_view(['POST', 'DELETE'])
-# @permission_classes([IsAuthenticated])
-# def creat_delete_recipe(request, pk, model):
-#     recipe = get_object_or_404(Recipe, pk=pk)
-#     if request.method == 'POST':
-#         try:
-#             model.objects.create(user=request.user, recipe=recipe)
-#             answer = ShortRecipeSerializer(recipe)
-#             return Response(answer.data, status=status.HTTP_201_CREATED
-#                             )
-#         except IntegrityError as error:
-#             error_message = get_error_message(error.__str__(),
-#                                               model.__name__)
-#             return Response({'errors': error_message},
-#                             status=status.HTTP_400_BAD_REQUEST)
+    @action(
+        detail=True, methods=['post', 'delete'],
+        permission_classes=(IsAuthenticated,)
+    )
+    def favorite(self, request, pk):
+        return self.__get_intersection_model(request, pk, Favorite)
 
-#     if request.method == 'DELETE':
-#         if model.objects.filter(user=request.user, recipe=recipe).count() == 0:
-#             return Response({'errors': 'рецепта отсутствует в списке'},
-#                             status=status.HTTP_400_BAD_REQUEST)
-#         obj = model.objects.get(user=request.user, recipe=recipe)
-#         obj.delete()
-#         return Response(status=status.HTTP_204_NO_CONTENT)
+    @action(
+        detail=True, methods=['post', 'delete'],
+        permission_classes=(IsAuthenticated,)
+    )
+    def shopping_cart(self, request, pk):
+        return self.__get_intersection_model(request, pk, Cart)
 
 
 class UserViewSet(viewsets.ModelViewSet):

@@ -24,7 +24,7 @@ class Tag(models.Model):
 
     class Meta:
         verbose_name = 'Тэг'
-        oredring = ('-id')
+        ordering = ('-id',)
 
     def __str__(self):
         return self.name
@@ -61,10 +61,9 @@ class Recipe(models.Model):
         verbose_name='Наименование рецепта'
     )
     image = models.ImageField(
-        'Картинка',
-        upload_to='recipes/',
+        verbose_name='Картинка',
+        upload_to='recipes/pictures',
         blank=True,
-        verbose_name='Изображение'
     )
     text = models.TextField(
         verbose_name='Описание'
@@ -88,8 +87,8 @@ class Recipe(models.Model):
     )
 
     class Meta:
-        ordering = ('-id')
-        verbose_name='Рецепт'
+        ordering = ('-id',)
+        verbose_name = 'Рецепт'
 
     def __str__(self):
         return self.name
@@ -109,16 +108,15 @@ class IngredientAmount(models.Model):
         verbose_name='Ингридиент'
     )
     amount = models.PositiveSmallIntegerField(
-        'Количество ингрдиентов',
-        verbose_name='Количество',
+        verbose_name='Количество ингрдиентов',
         validators=[
             MinValueValidator(INGREDIENTS_MIN_QUANTITY, 'Минимальное количество 0.25!')
         ]
     )
 
     class Meta:
-        ordering = ('-id')
-        verbose_name='Количество ингредиентов'
+        ordering = ('-id',)
+        verbose_name = 'Количество ингредиентов'
 
 
 class Favorite(models.Model):
@@ -140,11 +138,12 @@ class Favorite(models.Model):
     )
 
     class Meta:
-        verbose_name='Любимый рецепт'
+        verbose_name = 'Любимый рецепт'
 
     def __str__(self):
         return self.user
-       
+
+
 class Cart(models.Model):
     user = models.ForeignKey(
         User,
