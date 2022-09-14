@@ -7,35 +7,29 @@ MAX_LENGTH = 150
 class User(AbstractUser):
 
     username = models.CharField(
-        'Логин',
+        verbose_name='Логин',
         max_length=MAX_LENGTH,
         blank=True,
         unique=True
     )
     password = models.CharField(
-        'Пароль',
+        verbose_name='Пароль',
         max_length=MAX_LENGTH,
         blank=True,
     )
     email = models.EmailField(
-        'E-mail',
+        verbose_name='E-mail',
         max_length=254,
         blank=False,
         unique=True
     )
     first_name = models.CharField(
-        'Имя',
+        verbose_name='Имя',
         max_length=MAX_LENGTH,
         blank=False,
     )
-    middle_name = models.CharField(
-        'Отчество',
-        max_length=MAX_LENGTH,
-        blank=False,
-    )
-
-    Last_name = models.CharField(
-        'Фамилия',
+    last_name = models.CharField(
+        verbose_name='Фамилия',
         max_length=MAX_LENGTH,
         blank=False,
     )

@@ -17,3 +17,9 @@ class IsAdmin(permissions.BasePermission):
             request.user.is_admin
             or request.user.is_superuser
         )
+
+
+class UserPermission(permissions.BasePermission):
+    def has_permission(self, request, view):
+        return (view.action in ('list', 'create')
+                or request.user.is_authenticated)
