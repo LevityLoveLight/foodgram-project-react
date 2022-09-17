@@ -5,12 +5,9 @@ on: [push]
 jobs:
   tests:
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.10
+    strategy:
+      matrix:
+        python-version: ["3.7", "3.8", "3.9", "3.10"]
 
       - name: Install dependencies
         run: | 
@@ -38,7 +35,7 @@ jobs:
         with:
           push: true
           context: ./backend/
-          tags: ${{ secrets.DOCKER_USERNAME }}/backend_foodgram
+          tags: teokornero/yamdb_final:latest
 
   deploy:
     runs-on: ubuntu-latest
