@@ -20,10 +20,12 @@ services:
       - ./.env
 
   frontend:
-    image: teokornero/foodgram_backend:latest
+    image: teokornero/foodgram_frontend:latest
     restart: always
     volumes:
       - ../frontend/:/app/result_build/
+    depends_on:
+      - db  
   nginx:
     image: nginx:1.19.3
     ports:
