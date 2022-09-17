@@ -1,14 +1,16 @@
 import os
 
 from pathlib import Path
+from dotenv import load_dotenv
 
+load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-w7qra78ktij+30sh!s)zlkx)oij9fiquew+cecbza$&(jv*gvt'
 
 
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -64,9 +66,9 @@ DATABASES = {
     'default': {
         'ENGINE': os.getenv('DB_ENGINE', default='django.db.backends.postgresql'),
         'NAME': os.getenv('DB_NAME', default='foodgram'),
-        'USER': os.getenv('POSTGRES_USER', default='admin'),
-        'PASSWORD': os.getenv('POSTGRES_PASSWORD', default='admin'),
-        'HOST': os.getenv('DB_HOST', default='db'),
+        'USER': os.getenv('POSTGRES_USER', default='foodgram_user'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD', default='Grandsontop11'),
+        'HOST': os.getenv('DB_HOST', default='84.201.153.30'),
         'PORT': os.getenv('DB_PORT', default='5432'),
     }
 }
