@@ -6,7 +6,7 @@ from recipes.models import (Tag, Ingredient, Cart, Favorite, Recipe)
 @admin.register(Ingredient)
 class IngredientAdmin(admin.ModelAdmin):
 
-    list_display = ('id', 'name', 'units_of_measure')
+    list_display = ('id', 'name', 'measurement_unit')
     search_fields = ('name', )
     empty_value_display = '-пусто-'
     list_filter = ('name',)

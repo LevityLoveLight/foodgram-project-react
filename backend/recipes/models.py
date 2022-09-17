@@ -36,7 +36,7 @@ class Ingredient(models.Model):
         max_length=256,
         unique=True
     )
-    units_of_measure = models.CharField(
+    measurement_unit = models.CharField(
         verbose_name='Единица измерени',
         max_length=10
     )
@@ -73,7 +73,7 @@ class Recipe(models.Model):
         through='IngredientAmount',
         related_name='recipes',
         verbose_name='Ингридиенты'
-    )   
+    )
     tags = models.ManyToManyField(
         Tag,
         related_name='recipes',
@@ -98,13 +98,13 @@ class IngredientAmount(models.Model):
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
-        related_name='recipes',
+        related_name='recipe',
         verbose_name='Рецепт'
     )
     ingredient = models.ForeignKey(
         Ingredient,
         on_delete=models.CASCADE,
-        related_name='recipes',
+        related_name='recipe',
         verbose_name='Ингридиент'
     )
     amount = models.PositiveSmallIntegerField(
@@ -160,7 +160,6 @@ class Cart(models.Model):
 
     class Meta:
         verbose_name = 'Покупка'
-
 
     def __str__(self):
         return f'{self.user} {self.recipe}'
