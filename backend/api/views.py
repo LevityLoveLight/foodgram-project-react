@@ -1,15 +1,12 @@
-from django.contrib.auth.tokens import default_token_generator
 from rest_framework.generics import ListAPIView
 from django.http import HttpResponse
 from django.template.loader import render_to_string
-from django.db import IntegrityError
-from django.core.mail import send_mail
-from django.shortcuts import render
 from django.contrib.auth import get_user_model
 from djoser.views import UserViewSet
 from rest_framework.views import APIView
-from rest_framework import generics, status, viewsets
-from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly, SAFE_METHODS
+from rest_framework import status, viewsets
+from rest_framework.permissions import (IsAuthenticatedOrReadOnly,
+                                        SAFE_METHODS)
 from rest_framework.response import Response
 from rest_framework.decorators import action, api_view, permission_classes
 from django.shortcuts import get_object_or_404
@@ -19,7 +16,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 
 from .utils import make_shopping_list
 from .pagination import FoodgramPagination
-from .permissions import AdminOrReadOnly, IsAdmin, UserPermission, IsAuthorOrReadOnly
+from .permissions import UserPermission, IsAuthorOrReadOnly
 from .serializer import UserSerializer, TagSerializer, RecipeReadSerializer, RecipeWriteSerializer, RecipeSerializer, IngredientSerializer, FavoriteSerializer, FollowSerializer, CartSerializer
 from recipes.models import Recipe, Tag, Ingredient, IngredientAmount, Cart, Favorite
 from users.models import Follow, User
@@ -42,9 +39,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthorOrReadOnly,)
 
     def get_serializer_class(self):
-        if self.action in ('list', 'retrieve'):
-            return RecipeSerializer
-        return RecipeCreateSerializer
+        if self.request.method in SAFE_METHODS:
+            return RecipeReadSerializer
+        return RecipeWriteSerializer
 
     @staticmethod
     def create_object(request, pk, serializers):
@@ -65,7 +62,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     @action(
         detail=True,
         methods=('post', 'delete'),
-        permission_classes=(IsAuthenticated,),
+        permission_classes=(IsAuthenticatedOrReadOnly,),
     )
     def favorite(self, request, pk):
         if request.method == 'POST':
@@ -79,7 +76,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     @action(
         detail=True,
         methods=('post', 'delete'),
-        permission_classes=(IsAuthenticated,),
+        permission_classes=(IsAuthenticatedOrReadOnly,),
     )
     def shopping_cart(self, request, pk):
         if request.method == 'POST':
@@ -93,7 +90,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     @action(
         detail=False,
         methods=('get',),
-        permission_classes=(IsAuthenticated,),
+        permission_classes=(IsAuthenticatedOrReadOnly,),
     )
     def download_shopping_cart(self, user):
         main_list = make_shopping_list(user)
@@ -137,7 +134,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
 class FollowListViewSet(ListAPIView):
     serializer_class = FollowSerializer
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticatedOrReadOnly,)
 
     def get_queryset(self):
         return User.objects.filter(following__user=self.request.user)
@@ -145,7 +142,7 @@ class FollowListViewSet(ListAPIView):
 
 class FollowViewSet(APIView):
     serializer_class = FollowSerializer
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticatedOrReadOnly,)
 
     def post(self, request, *args, **kwargs):
         user_id = self.kwargs.get('user_id')

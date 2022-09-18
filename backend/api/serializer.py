@@ -1,11 +1,10 @@
-from rest_framework import serializers, validators
-from django.contrib.auth.tokens import default_token_generator
+from rest_framework import serializers
 from django.shortcuts import get_object_or_404
-from djoser.serializers import UserCreateSerializer
 from drf_extra_fields.fields import Base64ImageField
 
 from users.models import User, Follow
-from recipes.models import Tag, Ingredient, Recipe, IngredientAmount, Cart, Favorite
+from recipes.models import (Tag, Ingredient, Recipe,
+                            IngredientAmount, Cart, Favorite)
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -99,6 +98,7 @@ class IngredientAmountSerializer(serializers.ModelSerializer):
             'amount',
         )
 
+
 class RecipeWriteSerializer(serializers.ModelSerializer):
     author = UserSerializer(read_only=True)
     image = Base64ImageField()
@@ -106,7 +106,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
     tags = serializers.PrimaryKeyRelatedField(
         queryset=Tag.objects.all(),
         many=True
-        )
+    )
 
     class Meta:
         model = Recipe
