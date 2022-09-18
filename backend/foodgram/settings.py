@@ -128,4 +128,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 COOCKING_MIN_TIME = 1
 INGREDIENTS_MIN_QUANTITY = 0.25
-CART_INGREDIENTS_FORMAT = '\t{name}, {units_of_measure}: {total}'
+CART_INGREDIENTS_FORMAT = '\t{name}, {measurement_unit}: {total}'
