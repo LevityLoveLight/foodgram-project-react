@@ -38,5 +38,5 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://84.201.153.30/"
+  "proxy": "http://backend:8000/"
 }
