@@ -1,65 +1,56 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-MAX_LENGTH = 150
-
 
 class User(AbstractUser):
-
-    username = models.CharField(
-        verbose_name='Логин',
-        max_length=MAX_LENGTH,
-        blank=True,
-        unique=True
-    )
-    password = models.CharField(
-        verbose_name='Пароль',
-        max_length=MAX_LENGTH,
-        blank=True,
+    """Модель пользователя"""
+    ADMIN = 'admin'
+    USER = 'user'
+    ROLE_CHOICES = (
+        (ADMIN, 'admin'),
+        (USER, 'user'),
     )
     email = models.EmailField(
-        verbose_name='E-mail',
+        verbose_name='Электр. почта',
+        unique=True,
         max_length=254,
-        blank=False,
-        unique=True
     )
-    first_name = models.CharField(
-        verbose_name='Имя',
-        max_length=MAX_LENGTH,
-        blank=False,
+    role = models.CharField(
+        verbose_name='Роль',
+        choices=ROLE_CHOICES,
+        default=USER,
+        max_length=9,
     )
-    last_name = models.CharField(
-        verbose_name='Фамилия',
-        max_length=MAX_LENGTH,
-        blank=False,
-    )
-
-    REQUIRED_FIELDS = ['username', 'first_name', 'last_name', 'password']
-    USERNAME_FIELD = 'email'
 
     class Meta:
-        ordering = ['id']
+        ordering = ('role', )
         verbose_name = 'Пользователь'
+        verbose_name_plural = 'Пользователи'
+
+    @property
+    def is_admin(self):
+        return self.is_staff or self.is_superuser or self.role == self.ADMIN
 
     def __str__(self):
         return self.username
 
 
 class Follow(models.Model):
-    author = models.ForeignKey(
+    """Модель подписки"""
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='followers',
+    )
+    following = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         related_name='following',
     )
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name='follower'
-    )
 
     class Meta:
-        verbose_name = 'Подписка'
-        ordering = ('id',)
+        verbose_name = 'Подписчик'
+        verbose_name_plural = 'Подписчики'
 
     def __str__(self):
-        return f' Пользователь{self.user} подписан на {self.author}'
+        return f'{self.following} {self.user}'

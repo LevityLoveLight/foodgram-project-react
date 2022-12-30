@@ -1,24 +1,25 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from users.models import Follow, User
+from .models import User, Follow
 
 
-@admin.register(User)
 class UserAdmin(UserAdmin):
+    model = User
     list_display = (
-        'id',
-        'username',
-        'email',
-        'first_name',
-        'last_name',
+        'id', 
+        'username', 
+        'first_name', 
+        'last_name', 
+        'email', 
+        'password', 
+        'is_staff', 
+        'is_active'
     )
-    list_filter = (
-        'username',
-        'email',
-    )
-    search_fields = (
-        'username',
-        'last_name',
-        'email',
-    )
+    ordering = ('email', )
+    search_fields = ('username', 'email', )
+    ordering = ('email', )
+
+
+admin.site.register(User, UserAdmin)
+admin.site.register(Follow)
