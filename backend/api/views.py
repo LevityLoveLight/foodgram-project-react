@@ -6,8 +6,7 @@ from djoser.views import UserViewSet
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.permissions import (IsAuthenticated, 
-                                        IsAuthenticatedOrReadOnly,
-                                        SAFE_METHODS)
+                                        IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
@@ -55,39 +54,35 @@ class UsersViewSet(UserViewSet):
         if self.request.method == 'DELETE' and subscription.exists():
             subscription.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
-        return Response(
-            {'error': 'Вы не подписаны на данного пользователя'},
-            status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 class TagViewSet(ReadOnlyModelViewSet):
-    """Вью сет для Тега"""
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
     pagination_class = None
 
 
 class IngredientViewSet(ReadOnlyModelViewSet):
-    """Вью сет для Ингредиента"""
     queryset = Ingredient.objects.all()
     serializer_class = IngredientListSerializer
-    filter_backends = (DjangoFilterBackend,)
+    pagination_class = None
+    filter_backends = (DjangoFilterBackend, )
     filterset_class = IngredientFilter
 
 
 class RecipeViewSet(ModelViewSet):
-    """Вью сет для Рецептов"""
     queryset = Recipe.objects.all()
     serializer_class = RecipeWriteSerializer
-    pagination_class = FoodgramPagination
-    permission_classes = (IsAuthenticatedOrReadOnly,)
-    filter_backends = (DjangoFilterBackend,)
+    permission_classes = (IsAuthenticatedOrReadOnly, )
+    filter_backends = (DjangoFilterBackend, )
     filterset_class = RecipeFilter
+    pagination_class = FoodgramPagination
 
     def get_serializer_class(self):
-        if self.request.method in SAFE_METHODS:
-            return RecipeReadSerializer
-        return RecipeWriteSerializer
+        if self.request.method in ('POST', 'PUT', 'PATCH'):
+            return RecipeWriteSerializer
+        return RecipeReadSerializer
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
@@ -137,14 +132,16 @@ class RecipeViewSet(ModelViewSet):
             else:
                 shopping_list[name]['amount'] += amount
         main_list = ([
-            f"{item}: {value['amount']}"
-            f"({value['measurement_unit']})\n"
+            f"✅ {item}: {value['amount']}"
+            f" ({value['measurement_unit']})\n"
             for item, value in shopping_list.items()]
         )
         today = datetime.date.today()
-        main_list.append(f'Foodgram:{today.day}-{today.month}-{today.year}')
+        main_list.append(
+            f'\n 🌭 FoodGram, '
+            f'{today.day}-{today.month}-{today.year}')
         response = HttpResponse(main_list, 'Content-Type: text/plain')
-        response['Content-Disposition'] = 'attachment; filename="ShopCart.txt"'
+        response['Content-Disposition'] = 'attachment; filename="ShopList.txt"'
         return response
 
     @action(

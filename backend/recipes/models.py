@@ -78,7 +78,7 @@ class Recipe(models.Model):
     )
     cooking_time = models.PositiveSmallIntegerField(
         default=1,
-        validators=[MinValueValidator(1, 'Значение должго быть >= 1')],
+        validators=[MinValueValidator(1, 'Значение должно быть >= 1')],
         verbose_name='Время готовки',
     )
     text = models.TextField(null=True)
@@ -115,7 +115,7 @@ class IngredientAmount(models.Model):
         verbose_name_plural = 'Количество ингредиентов'
 
     def str(self):
-        return f'{self.ingredient} {self.recipe}'
+        return f'{self.ingredient.name} {self.recipe.name}'
 
 
 class Favorite(models.Model):
@@ -146,7 +146,7 @@ class Favorite(models.Model):
         )
 
     def __str__(self):
-        return f"{self.user} {self.recipe.name}"
+        return f"{self.user.username} {self.recipe.name}"
 
 
 class ShoppingCart(models.Model):
@@ -173,4 +173,4 @@ class ShoppingCart(models.Model):
         verbose_name_plural = 'Покупки'
 
     def __str__(self):
-        return f' {self.user} {self.recipe}'
+        return f' {self.user.username} {self.recipe.name}'
