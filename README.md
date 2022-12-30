@@ -100,7 +100,7 @@ sudo docker compose exec backend python manage.py load_ingredients
 - Загрузить тэги в базу данных:
 ```
 sudo docker compose exec backend python manage.py load_tags
-``
+```
 
 - Создать суперпользователя Django:
 ```
