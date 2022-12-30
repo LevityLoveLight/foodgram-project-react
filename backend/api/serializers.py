@@ -91,9 +91,9 @@ class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
         fields = (
-            'id', 
-            'name', 
-            'color', 
+            'id',
+            'name',
+            'color',
             'slug'
         )
 
@@ -125,9 +125,9 @@ class IngredientSerializer(serializers.ModelSerializer):
     class Meta:
         model = IngredientAmount
         fields = (
-            'id', 
-            'name', 
-            'measurement_unit', 
+            'id',
+            'name',
+            'measurement_unit',
             'amount'
         )
 
@@ -142,7 +142,7 @@ class IngredientRecipeSerializer(serializers.ModelSerializer):
     class Meta:
         model = IngredientAmount
         fields = (
-            'amount', 
+            'amount',
             'id'
         )
 
@@ -153,9 +153,9 @@ class RecipeImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recipe
         fields = (
-            'id', 
-            'name', 
-            'image', 
+            'id',
+            'name',
+            'image',
             'cooking_time'
         )
 
@@ -214,7 +214,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
     tags = serializers.PrimaryKeyRelatedField(
         many=True,
         queryset=Tag.objects.all())
-    image = Base64ImageField(use_url=True, max_length=None)    
+    image = Base64ImageField(use_url=True, max_length=None) 
     cooking_time = serializers.IntegerField()
 
     class Meta:
@@ -293,8 +293,8 @@ class ShortRecipeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recipe
         fields = (
-            'id', 
-            'name', 
-            'image', 
+            'id',
+            'name',
+            'image',
             'cooking_time'
         )

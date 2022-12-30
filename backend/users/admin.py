@@ -7,13 +7,13 @@ from .models import Follow, User
 class UserAdmin(UserAdmin):
     model = User
     list_display = (
-        'id', 
-        'username', 
-        'first_name', 
-        'last_name', 
-        'email', 
-        'password', 
-        'is_staff', 
+        'id',
+        'username',
+        'first_name',
+        'last_name',
+        'email',
+        'password',
+        'is_staff',
         'is_active'
     )
     ordering = ('email', )
