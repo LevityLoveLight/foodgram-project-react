@@ -1,4 +1,4 @@
-# Проект "Foodgram"
+# Проект "Foodgram": http://84.201.162.136
 
 ![example workflow](https://github.com/LevityLoveLight/foodgram-project-react/actions/workflows/main.yml/badge.svg)  
 ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
