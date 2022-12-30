@@ -5,19 +5,20 @@ from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.permissions import (IsAuthenticated, 
+from rest_framework.permissions import (IsAuthenticated,
                                         IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
-from .filters import IngredientFilter, RecipeFilter
 from recipes.models import (Favorite, Ingredient, IngredientAmount, Recipe,
-                     ShoppingCart, Tag)
+                            ShoppingCart, Tag)
+from users.models import Follow, User
+
+from .filters import IngredientFilter, RecipeFilter
 from .pagination import FoodgramPagination
-from .serializers import (FollowSerializer, IngredientListSerializer, 
+from .serializers import (FollowSerializer, IngredientListSerializer,
                           RecipeReadSerializer, RecipeWriteSerializer,
                           ShortRecipeSerializer, TagSerializer)
-from users.models import User, Follow
 
 
 class UsersViewSet(UserViewSet):
