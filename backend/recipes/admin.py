@@ -27,26 +27,37 @@ class IngredientInRecipeAdmin(admin.ModelAdmin):
 
 
 class RecipeAdmin(admin.ModelAdmin):
-    inlines = (IngredientAmountInline, )
-    list_display = (
-        'id',
-        'author',
-        'name',
-        'image',
-        'text',
-        'is_favorited',
-        'ingredients',
-    )
-    search_fields = ('author', 'name',)
-    list_filter = ('author', 'name', 'tags')
+    list_display = ('id', 'name', 'author', 'favorites',)
+    search_fields = ('name', 'author__username', 'tags__name')
+    list_filter = ('tags',)
     empty_value_display = '-пусто-'
+    inlines = (
+        IngredientAmountInline,
+    )
 
-    def is_favorited(self, obj):
+    def favorites(self, obj):
         return Favorite.objects.filter(recipe=obj).count()
 
-    def ingredients(self, obj):
-        return list(Ingredient.objects.filter(recipe=obj).count())
-    ingredients.short_description = 'Ингредиенты'
+    # inlines = (IngredientAmountInline, )
+    # list_display = (
+    #     'id',
+    #     'author',
+    #     'name',
+    #     'image',
+    #     'text',
+    #     'is_favorited',
+    #     'ingredients',
+    # )
+    # search_fields = ('author', 'name',)
+    # list_filter = ('author', 'name', 'tags')
+    # empty_value_display = '-пусто-'
+
+    # def is_favorited(self, obj):
+    #     return Favorite.objects.filter(recipe=obj).count()
+
+    # def ingredients(self, obj):
+    #     return list(Ingredient.objects.filter(recipe=obj).count())
+    # ingredients.short_description = 'Ингредиенты'
 
 
 class AdminTag(admin.ModelAdmin):
