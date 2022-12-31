@@ -19,9 +19,6 @@ class IngredientAdmin(admin.ModelAdmin):
 
 
 class IngredientInRecipeAdmin(admin.ModelAdmin):
-    """
-    Кастомизация админ панели (управление ингридиентами в рецептах).
-    """
     list_display = (
         'ingredient',
         'amount',
@@ -30,21 +27,26 @@ class IngredientInRecipeAdmin(admin.ModelAdmin):
 
 
 class RecipeAdmin(admin.ModelAdmin):
+    inlines = (IngredientAmountInline, )
     list_display = (
-        'name',
+        'id',
         'author',
-        'added_in_favorites'
+        'name',
+        'image',
+        'text',
+        'is_favorited',
+        'ingredients',
     )
-    list_display_links = ('name',)
-    search_fields = ('name',)
+    search_fields = ('author', 'name', 'tags')
     list_filter = ('author', 'name', 'tags')
-    readonly_fields = ('added_in_favorites',)
-    filter_horizontal = ('tags',)
+    empty_value_display = '-пусто-'
 
-    def added_in_favorites(self, obj):
-        return obj.favorites.all().count()
+    def is_favorited(self, obj):
+        return obj.favorites.count()
 
-    added_in_favorites.short_description = 'Количество добавлений в избранное'
+    def ingredients(self, obj):
+        return list(obj.ingredients.all())
+    ingredients.short_description = 'Ингредиенты'
 
 
 class AdminTag(admin.ModelAdmin):
