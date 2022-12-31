@@ -60,7 +60,6 @@ class AdminTag(admin.ModelAdmin):
 
 admin.site.register(Tag, AdminTag)
 admin.site.register(Ingredient, IngredientAdmin)
-admin.site.register(IngredientAmount)
 admin.site.register(IngredientAmount, IngredientRecipeAdmin)
 admin.site.register(Recipe, RecipeAdmin)
 admin.site.register(Favorite)
