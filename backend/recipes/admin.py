@@ -22,6 +22,11 @@ class IngredientsInline(admin.TabularInline):
     model = Ingredient
 
 
+class IngredientRecipeAdmin(admin.ModelAdmin):
+    list_display = ('pk', 'recipe', 'ingredient', 'amount')
+    list_editable = ('recipe', 'ingredient', 'amount')
+
+
 class RecipeAdmin(admin.ModelAdmin):
     inlines = (IngredientAmountInline, )
     list_display = (
@@ -33,10 +38,12 @@ class RecipeAdmin(admin.ModelAdmin):
         'is_favorited',
         'ingredients',
     )
+    readonly_fields = ('is_favorited',)
     search_fields = ('author', 'name')
     list_filter = ('author', 'name', 'tags')
     empty_value_display = '-пусто-'
 
+    @admin.display(description='В избранном')
     def is_favorited(self, obj):
         return obj.favorites.count()
 
@@ -54,6 +61,7 @@ class AdminTag(admin.ModelAdmin):
 admin.site.register(Tag, AdminTag)
 admin.site.register(Ingredient, IngredientAdmin)
 admin.site.register(IngredientAmount)
+admin.site.register(IngredientAmount, IngredientRecipeAdmin)
 admin.site.register(Recipe, RecipeAdmin)
 admin.site.register(Favorite)
 admin.site.register(ShoppingCart)
