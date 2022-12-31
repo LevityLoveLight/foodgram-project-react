@@ -33,11 +33,11 @@ class RecipeAdmin(admin.ModelAdmin):
         'author',
         'name',
         'image',
-        'ingredients',
         'text',
         'is_favorited',
+        'ingredients',
     )
-    search_fields = ('author', 'name', 'tags')
+    search_fields = ('author', 'name', 'tags',)
     list_filter = ('author', 'name', 'tags')
     empty_value_display = '-пусто-'
 
