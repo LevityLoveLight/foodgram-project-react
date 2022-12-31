@@ -18,37 +18,33 @@ class IngredientAdmin(admin.ModelAdmin):
     empty_value_display = '-пусто-'
 
 
-class IngredientsInline(admin.TabularInline):
-    model = Ingredient
-
-
-class IngredientRecipeAdmin(admin.ModelAdmin):
-    list_display = ('pk', 'recipe', 'ingredient', 'amount')
-    list_editable = ('recipe', 'ingredient', 'amount')
+class IngredientInRecipeAdmin(admin.ModelAdmin):
+    """
+    Кастомизация админ панели (управление ингридиентами в рецептах).
+    """
+    list_display = (
+        'ingredient',
+        'amount',
+    )
+    list_filter = ('ingredient',)
 
 
 class RecipeAdmin(admin.ModelAdmin):
-    inlines = (IngredientAmountInline, )
     list_display = (
-        'id',
-        'author',
         'name',
-        'image',
-        'text',
-        'is_favorited',
-        'ingredients',
+        'author',
+        'added_in_favorites'
     )
-    readonly_fields = ('is_favorited',)
-    search_fields = ('author', 'name')
+    list_display_links = ('name',)
+    search_fields = ('name',)
     list_filter = ('author', 'name', 'tags')
-    empty_value_display = '-пусто-'
+    readonly_fields = ('added_in_favorites',)
+    filter_horizontal = ('tags',)
 
-    @admin.display(description='В избранном')
-    def is_favorited(self, obj):
-        return obj.favorites.count()
+    def added_in_favorites(self, obj):
+        return obj.favorites.all().count()
 
-    def ingredients(self, obj):
-        return list(obj.ingredients.all())
+    added_in_favorites.short_description = 'Количество добавлений в избранное's
 
 
 class AdminTag(admin.ModelAdmin):
@@ -60,7 +56,7 @@ class AdminTag(admin.ModelAdmin):
 
 admin.site.register(Tag, AdminTag)
 admin.site.register(Ingredient, IngredientAdmin)
-admin.site.register(IngredientAmount, IngredientRecipeAdmin)
+admin.site.register(IngredientAmount, IngredientInRecipeAdmin)
 admin.site.register(Recipe, RecipeAdmin)
 admin.site.register(Favorite)
 admin.site.register(ShoppingCart)
