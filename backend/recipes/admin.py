@@ -35,14 +35,14 @@ class RecipeAdmin(admin.ModelAdmin):
         'image',
         'ingredients',
         'text',
-        # 'is_favorited',
+        'is_favorited',
     )
     search_fields = ('author', 'name', 'tags')
     list_filter = ('author', 'name', 'tags')
     empty_value_display = '-пусто-'
 
-    # def is_favorited(self, obj):
-    #     return obj.favorites.count()
+    def is_favorited(self, obj):
+        return Favorite.objects.filter(recipe=obj).count()
 
     def ingredients(self, obj):
         return list(obj.ingredients.all())
