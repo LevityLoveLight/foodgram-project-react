@@ -42,6 +42,7 @@ jobs:
           context: ./backend
           push: true
           tags: teokornero/foodgram_backend:latest
+
   deploy:
     runs-on: ubuntu-latest
     needs: build_and_push_to_docker_hub
